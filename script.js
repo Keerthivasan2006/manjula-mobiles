@@ -1,3 +1,5 @@
+// Updated script.js with mobile navigation functionality
+
 // MobileFix Pro - Static Website Application
 class MobileFixApp {
   constructor() {
@@ -8,6 +10,7 @@ class MobileFixApp {
     this.editingProductId = null
     this.productSearch = "" // Add search state variables
     this.adminSearch = "" // Add search state variables
+    this.mobileMenuOpen = false // Track mobile menu state
     this.loadProductsFromStorage()
     this.loadTrackingFromStorage()
     this.init()
@@ -195,6 +198,7 @@ class MobileFixApp {
     const app = document.getElementById("app")
     app.addEventListener("click", (e) => {
       if (e.target.dataset.page) {
+        this.closeMobileMenu()
         this.renderPage(e.target.dataset.page)
       }
       if (e.target.dataset.action === "admin-login") {
@@ -239,7 +243,37 @@ class MobileFixApp {
       if (e.target.dataset.action === "cancel-payment") {
         this.renderPage("checkout")
       }
+      if (e.target.dataset.action === "toggle-mobile-menu") {
+        this.toggleMobileMenu()
+      }
     })
+  }
+
+  toggleMobileMenu() {
+    this.mobileMenuOpen = !this.mobileMenuOpen
+    const mobileMenu = document.querySelector('.mobile-nav-menu')
+    const menuToggle = document.querySelector('.mobile-menu-toggle')
+    
+    if (mobileMenu) {
+      if (this.mobileMenuOpen) {
+        mobileMenu.classList.add('active')
+        menuToggle.classList.add('active')
+      } else {
+        mobileMenu.classList.remove('active')
+        menuToggle.classList.remove('active')
+      }
+    }
+  }
+
+  closeMobileMenu() {
+    this.mobileMenuOpen = false
+    const mobileMenu = document.querySelector('.mobile-nav-menu')
+    const menuToggle = document.querySelector('.mobile-menu-toggle')
+    
+    if (mobileMenu) {
+      mobileMenu.classList.remove('active')
+      menuToggle.classList.remove('active')
+    }
   }
 
   handleAdminLogin() {
@@ -412,8 +446,20 @@ class MobileFixApp {
                         <button class="nav-link ${this.currentPage === "about" ? "active" : ""}" data-page="about">About</button>
                         ${this.isAdminLoggedIn ? `<button class="nav-admin" data-action="admin-logout">Logout (Owner)</button>` : `<button class="nav-admin" data-page="admin-login">Owner Portal</button>`}
                     </div>
+                    <button class="mobile-menu-toggle" data-action="toggle-mobile-menu">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </button>
                 </div>
             </nav>
+            <div class="mobile-nav-menu">
+                <button class="mobile-nav-link ${this.currentPage === "home" ? "active" : ""}" data-page="home">Home</button>
+                <button class="mobile-nav-link ${this.currentPage === "shop-location" ? "active" : ""}" data-page="shop-location">Shop Location</button>
+                <button class="mobile-nav-link ${this.currentPage === "products" ? "active" : ""}" data-page="products">Products</button>
+                <button class="mobile-nav-link ${this.currentPage === "about" ? "active" : ""}" data-page="about">About</button>
+                ${this.isAdminLoggedIn ? `<button class="mobile-nav-admin" data-action="admin-logout">Logout (Owner)</button>` : `<button class="mobile-nav-admin" data-page="admin-login">Owner Portal</button>`}
+            </div>
         `
   }
 
